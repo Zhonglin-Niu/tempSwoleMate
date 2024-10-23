@@ -97,7 +97,7 @@ const ChatItem = ({ item }: { item: ChatItemType }) => (
       //   navigation.navigate("chat", { userID: item.id });
       router.push({
         pathname: "/chat/[userID]",
-        params: { userId: item.id },
+        params: { userID: item.id },
       });
     }}
   >

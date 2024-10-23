@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,9 @@ import {
   TouchableOpacity,
   TextInput,
   FlatList,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -73,52 +76,79 @@ const MessageItem = ({ message }: { message: any }) => (
 );
 
 const ChatScreen = () => {
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+  useEffect(() => {
+    const keyboardWillShowListener = Keyboard.addListener(
+      "keyboardWillShow",
+      (e) => setKeyboardHeight(e.endCoordinates.height)
+    );
+    const keyboardWillHideListener = Keyboard.addListener(
+      "keyboardWillHide",
+      () => setKeyboardHeight(0)
+    );
+
+    return () => {
+      keyboardWillShowListener.remove();
+      keyboardWillHideListener.remove();
+    };
+  }, []);
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.back()}
-        >
-          <Ionicons name="arrow-back" size={24} color="#000" />
-        </TouchableOpacity>
-        <Image
-          source={require("@/assets/avatars/2.png")}
-          style={styles.avatar}
-        />
-        <View style={styles.headerInfo}>
-          <Text style={styles.name}>Mike Mazowski</Text>
-          <Text style={styles.status}>Matched</Text>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 25}
+    >
+      <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+          >
+            <Ionicons name="arrow-back" size={24} color="#000" />
+          </TouchableOpacity>
+          <Image
+            source={require("@/assets/avatars/2.png")}
+            style={styles.avatar}
+          />
+          <View style={styles.headerInfo}>
+            <Text style={styles.name}>Mike Mazowski</Text>
+            <Text style={styles.status}>Matched</Text>
+          </View>
+          <TouchableOpacity>
+            <Ionicons name="ellipsis-vertical" size={24} color="#000" />
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity>
-          <Ionicons name="ellipsis-vertical" size={24} color="#000" />
-        </TouchableOpacity>
-      </View>
 
-      <FlatList
-        data={MESSAGES}
-        renderItem={({ item }) => <MessageItem message={item} />}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.messageContainer}
-      />
-
-      <View style={styles.inputContainer}>
-        <TouchableOpacity>
-          <Ionicons name="happy-outline" size={24} color="#666" />
-        </TouchableOpacity>
-        <TextInput
-          style={styles.input}
-          placeholder="Write a message..."
-          placeholderTextColor="#666"
+        <FlatList
+          data={MESSAGES}
+          renderItem={({ item }) => <MessageItem message={item} />}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={[
+            styles.messageContainer,
+            { paddingBottom: keyboardHeight },
+          ]}
         />
-        <TouchableOpacity>
-          <Ionicons name="attach" size={24} color="#666" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.sendButton}>
-          <Ionicons name="send" size={24} color="#FFF" />
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+
+        <View style={styles.inputContainer}>
+          <TouchableOpacity>
+            <Ionicons name="happy-outline" size={24} color="#666" />
+          </TouchableOpacity>
+          <TextInput
+            style={styles.input}
+            placeholder="Write a message..."
+            placeholderTextColor="#666"
+          />
+          <TouchableOpacity>
+            <Ionicons name="attach" size={24} color="#666" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.sendButton}>
+            <Ionicons name="send" size={24} color="#FFF" />
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 
