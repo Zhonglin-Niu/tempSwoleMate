@@ -3,6 +3,6 @@
 import { Redirect } from "expo-router";
 
 export default function Index() {
-  return <Redirect href={"/(screens)/social" as any} />;
+  return <Redirect href="/welcome" />;
   // return <Redirect href="/profile-creator" />;
 }
