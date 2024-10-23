@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import React from "react";
+import { router } from "expo-router";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -48,6 +49,37 @@ const DATA = [
   },
 ];
 
+const PENDING_DATA = [
+  {
+    id: "1",
+    name: "Darlene Steward",
+    time: "18.31",
+    avatar: require("@/assets/avatars/1.png"),
+    status: "Pending",
+  },
+  {
+    id: "2",
+    name: "Mike Mazowski",
+    time: "16.04",
+    avatar: require("@/assets/avatars/2.png"),
+    status: "Pending",
+  },
+  {
+    id: "3",
+    name: "Lee Williamson",
+    time: "06.12",
+    avatar: require("@/assets/avatars/3.png"),
+    status: "Pending",
+  },
+  {
+    id: "4",
+    name: "Ronald Mccoy",
+    time: "Yesterday",
+    avatar: require("@/assets/avatars/4.png"),
+    status: "Pending",
+  },
+];
+
 type ChatItemType = {
   id: string;
   name: string;
@@ -57,17 +89,65 @@ type ChatItemType = {
 };
 
 const ChatItem = ({ item }: { item: ChatItemType }) => (
-  <View style={styles.chatItem}>
+  <TouchableOpacity
+    style={styles.chatItem}
+    onPress={() => {
+      // Assuming you're using Expo Router or React Navigation
+      // Replace 'navigation.navigate' with the appropriate navigation method if different
+      //   navigation.navigate("chat", { userID: item.id });
+      router.push({
+        pathname: "/chat/[userID]",
+        params: { userId: item.id },
+      });
+    }}
+  >
     <Image source={item.avatar} style={styles.avatar} />
     <View style={styles.chatInfo}>
       <Text style={styles.name}>{item.name}</Text>
       <Text style={styles.message}>{item.message}</Text>
     </View>
     <Text style={styles.time}>{item.time}</Text>
-  </View>
+  </TouchableOpacity>
 );
 
+const TabContent = ({ activeTab }: { activeTab: string }) => {
+  switch (activeTab) {
+    case "Matched":
+      return (
+        <FlatList
+          data={DATA}
+          renderItem={({ item }) => <ChatItem item={item} />}
+        />
+      );
+    case "Pending":
+      return (
+        <FlatList
+          data={PENDING_DATA}
+          renderItem={({ item }) => (
+            <View style={styles.pendingItem}>
+              <Image source={item.avatar} style={styles.avatar} />
+              <View style={styles.itemContent}>
+                <Text style={styles.name}>{item.name}</Text>
+                <Text style={styles.status}>Pending</Text>
+              </View>
+              <Text style={styles.time}>{item.time}</Text>
+              <TouchableOpacity style={styles.closeButton}>
+                <Text style={styles.closeText}>x</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        />
+      );
+    case "Requests":
+      return <Text>Requests Content</Text>;
+    default:
+      return null;
+  }
+};
+
 const RecentChatsScreen = () => {
+  const [activeTab, setActiveTab] = useState("Matched");
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -80,34 +160,23 @@ const RecentChatsScreen = () => {
       <View style={styles.tabs}>
         {["Matched", "Pending", "Requests"].map((tab, index) => (
           <TouchableOpacity
-            key={index}
-            style={[styles.tab, index === 0 && styles.activeTab]}
+            key={tab}
+            style={[styles.tab, activeTab === tab && styles.activeTab]}
+            onPress={() => setActiveTab(tab)}
           >
-            <Text style={[styles.tabText, index === 0 && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === tab && styles.activeTabText,
+              ]}
+            >
               {tab}
             </Text>
           </TouchableOpacity>
         ))}
       </View>
 
-      <FlatList
-        data={DATA}
-        renderItem={({ item }) => <ChatItem item={item} />}
-        keyExtractor={(item) => item.id}
-      />
-
-      <View style={styles.bottomNav}>
-        {["Home", "Message", "Profile"].map((item, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[styles.navItem, index === 1 && styles.activeNavItem]}
-          >
-            <Text style={[styles.navText, index === 1 && styles.activeNavText]}>
-              {item}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <TabContent activeTab={activeTab} />
     </SafeAreaView>
   );
 };
@@ -195,6 +264,34 @@ const styles = StyleSheet.create({
   },
   activeNavText: {
     color: "#FFF",
+  },
+  pendingItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 16,
+    backgroundColor: "#FFB74D",
+    marginBottom: 8,
+    borderRadius: 8,
+  },
+  itemContent: {
+    flex: 1,
+    marginLeft: 16,
+  },
+  status: {
+    color: "#666",
+    marginTop: 4,
+  },
+  closeButton: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: "#FF0000",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  closeText: {
+    color: "#FFF",
+    fontSize: 16,
   },
 });
 

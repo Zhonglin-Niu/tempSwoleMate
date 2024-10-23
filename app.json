@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "SwoleMate",
-    "slug": "SwoleMate",
+    "slug": "swolemate",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -31,6 +31,12 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "d5f948b2-c715-41c4-818a-3b25fbf2a7da"
+      }
+    },
+    "owner": "loya"
   }
 }

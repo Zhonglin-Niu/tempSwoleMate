@@ -4,6 +4,7 @@ import {
   Text,
   Button,
   FlatList,
+  Image,
   StyleSheet,
   ImageBackground,
   TouchableOpacity,
@@ -193,10 +194,17 @@ function MatchScreen() {
                   item.matched && styles.matchedUserCard, // Apply green background if matched
                 ]}
               >
-                <Text style={styles.userName}>{item.name}</Text>
-                <Text>Age: {item.age}</Text>
-                <Text>Height: {item.height}</Text>
-                <Text>Weight: {item.weight}</Text>
+                <Image
+                  source={require("@/assets/SmallerLogo.png")}
+                  style={styles.profileImage}
+                />
+                <View style={styles.userInfo}>
+                  <Text style={styles.userName}>{item.name}</Text>
+                  <Text>Age: {item.age}</Text>
+                  <Text>Height: {item.height}</Text>
+                  <Text>Weight: {item.weight}</Text>
+                </View>
+
                 <View style={styles.buttonGroup}>
                   {item.matched ? (
                     <TouchableOpacity style={styles.messageButton}>
@@ -220,14 +228,6 @@ function MatchScreen() {
               </View>
             )}
           />
-
-          {/* Bottom navigation buttons */}
-
-          {/* <View style={styles.navButtonContainer}>
-          <Button title="Home" onPress={() => navigation.navigate('Hub')} />
-          <Button title="Profile" onPress={() => navigation.navigate('Profile')} />
-          <Button title="Matches" onPress={() => navigation.navigate('Matches')} />
-        </View> */}
         </View>
       </ImageBackground>
     </SafeAreaView>
@@ -243,21 +243,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "rgba(255, 255, 255, 0.8)", // Slightly transparent white
+    backgroundColor: "rgba(255, 255, 255, 0.8)", // Slightly transparent white background for consistency
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
-    color: "green",
+    color: "black",
   },
   userCard: {
+    flexDirection: "row",
+    alignItems: "center",
     padding: 15,
     marginVertical: 10,
-    borderColor: "gray",
-    borderWidth: 1,
+    borderColor: "blue",
+    borderWidth: 2,
     borderRadius: 8,
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
   },
   matchedUserCard: {
     backgroundColor: "rgba(144, 238, 144, 0.6)", // Light transparent green
@@ -265,7 +268,12 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "blue",
+    color: "black",
+    marginBottom: 5,
+  },
+  userInfo: {
+    flex: 1,
+    paddingLeft: 10,
   },
   buttonGroup: {
     flexDirection: "row",
@@ -274,32 +282,29 @@ const styles = StyleSheet.create({
   },
   matchButton: {
     backgroundColor: "green",
-    padding: 5,
+    padding: 10,
     borderRadius: 5,
-    width: "48%", // Use flex instead of width for consistency
     marginRight: 5, // Space between Match and Ignore buttons
   },
   ignoreButton: {
     backgroundColor: "red",
-    padding: 5,
+    padding: 10,
     borderRadius: 5,
-    width: "48%", // Use flex instead of width for consistency
   },
   messageButton: {
     backgroundColor: "blue",
-    padding: 5,
+    padding: 10,
     borderRadius: 5,
-    width: "48%",
-    // marginTop: 10,
   },
   buttonText: {
     color: "white",
     textAlign: "center",
   },
-  navButtonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginTop: 20,
+  profileImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 15,
   },
 });
 

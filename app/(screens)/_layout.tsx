@@ -1,54 +1,71 @@
+// TabLayout.tsx
 import { Tabs } from "expo-router";
-import React from "react";
+import { Text, View } from "react-native";
 
-import { TabBarIcon } from "@/components/navigation/TabBarIcon";
-import { Colors } from "@/constants/Colors";
-import { useColorScheme } from "@/hooks/useColorScheme";
+const CustomTab = ({
+  children,
+  focused,
+}: {
+  children: React.ReactNode;
+  focused: boolean;
+}) => (
+  <View
+    style={{
+      backgroundColor: focused ? "#6A5ACD" : "#E0E0E0",
+      paddingVertical: 8,
+      paddingHorizontal: 16,
+      borderRadius: 20,
+      minWidth: 80,
+      alignItems: "center",
+    }}
+  >
+    {children}
+  </View>
+);
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: false,
+        tabBarStyle: {
+          backgroundColor: "#fff",
+          height: 90,
+        },
+        tabBarItemStyle: {
+          margin: 5,
+        },
+        tabBarLabel: ({ focused, children }) => (
+          <CustomTab focused={focused}>
+            <Text
+              style={{
+                color: focused ? "#FFF" : "#000",
+                fontSize: 14,
+              }}
+            >
+              {children}
+            </Text>
+          </CustomTab>
+        ),
+        tabBarIcon: () => null,
       }}
     >
       <Tabs.Screen
         name="match"
         options={{
           title: "Home",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "home" : "home-outline"}
-              color={color}
-            />
-          ),
         }}
       />
       <Tabs.Screen
         name="social"
         options={{
-          title: "Social",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "chatbubble" : "chatbubble-outline"}
-              color={color}
-            />
-          ),
+          title: "Message",
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: "Profile",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "person" : "person-outline"}
-              color={color}
-            />
-          ),
         }}
       />
     </Tabs>
